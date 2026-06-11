@@ -10,7 +10,8 @@ class ViewFactory
 
     public function make(string $view, array $data = []): View
     {
-        $path = $this->basePath . '/' . str_replace('.', '/', $view) . '.nx.php';
+        $base = $this->basePath . '/' . str_replace('.', '/', $view);
+        $path = file_exists($base . '.nx.php') ? $base . '.nx.php' : $base . '.php';
         return new View($path, $data);
     }
 }
