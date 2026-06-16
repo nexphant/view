@@ -1,17 +1,17 @@
-# Nexph View Engine
+# nexphant View Engine
 
 Lightweight view engine with Blade-like syntax and hybrid rendering support.
 
 ## Installation
 
 ```bash
-composer require nexph/view
+composer require nexphant/view
 ```
 
 ## Usage
 
 ```php
-return view('home', ['title' => 'Nexph']);
+return view('home', ['title' => 'nexphant']);
 ```
 
 ## Syntax

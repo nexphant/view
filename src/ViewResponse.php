@@ -1,6 +1,6 @@
 <?php
 
-namespace Nexph\View;
+namespace nexphant\View;
 
 class ViewResponse
 {

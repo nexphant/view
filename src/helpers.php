@@ -1,13 +1,13 @@
 <?php
 
-namespace Nexph\View {
+namespace nexphant\View {
     if (!function_exists(__NAMESPACE__ . '\\view')) {
         function view(string $view, array $data = []): ViewResponse
         {
             static $factory = null;
             if ($factory === null) {
-                $basePath = defined('NEXPH_BASE_PATH') ? NEXPH_BASE_PATH : getcwd();
-                $viewPath = defined('NEXPH_VIEW_PATH') ? NEXPH_VIEW_PATH : $basePath . '/resources/views';
+                $basePath = defined('nexphant_BASE_PATH') ? nexphant_BASE_PATH : getcwd();
+                $viewPath = defined('nexphant_VIEW_PATH') ? nexphant_VIEW_PATH : $basePath . '/resources/views';
                 $factory = new ViewFactory($viewPath);
             }
             return new ViewResponse($factory->make($view, $data));
@@ -19,8 +19,8 @@ namespace Nexph\View {
         {
             static $factory = null;
             if ($factory === null) {
-                $basePath = defined('NEXPH_BASE_PATH') ? NEXPH_BASE_PATH : getcwd();
-                $viewPath = defined('NEXPH_VIEW_PATH') ? NEXPH_VIEW_PATH : $basePath . '/resources/views';
+                $basePath = defined('nexphant_BASE_PATH') ? nexphant_BASE_PATH : getcwd();
+                $viewPath = defined('nexphant_VIEW_PATH') ? nexphant_VIEW_PATH : $basePath . '/resources/views';
                 $factory = new ViewFactory($viewPath);
             }
             return $factory->raw($path);
@@ -69,42 +69,42 @@ namespace {
     if (!function_exists('raw')) {
         function raw(string $path): string
         {
-            return \Nexph\View\raw($path);
+            return \nexphant\View\raw($path);
         }
     }
 
     if (!function_exists('nx')) {
         function nx(mixed $value): string
         {
-            return \Nexph\View\nx($value);
+            return \nexphant\View\nx($value);
         }
     }
 
     if (!function_exists('nx_json')) {
         function nx_json(mixed $data): string
         {
-            return \Nexph\View\nx_json($data);
+            return \nexphant\View\nx_json($data);
         }
     }
 
     if (!function_exists('nx_asset')) {
         function nx_asset(string $path): string
         {
-            return \Nexph\View\nx_asset($path);
+            return \nexphant\View\nx_asset($path);
         }
     }
 
     if (!function_exists('nx_island')) {
         function nx_island(string $name, array $props): string
         {
-            return \Nexph\View\nx_island($name, $props);
+            return \nexphant\View\nx_island($name, $props);
         }
     }
 
     if (!function_exists('nx_mount')) {
         function nx_mount(string $name, array $props): string
         {
-            return \Nexph\View\nx_mount($name, $props);
+            return \nexphant\View\nx_mount($name, $props);
         }
     }
 }

@@ -1,6 +1,6 @@
 {
-    "name": "nexph/view",
-    "description": "Lightweight view engine for Nexph",
+    "name": "nexphant/view",
+    "description": "Lightweight view engine for nexphant",
     "type": "library",
     "license": "MIT",
     "require": {
@@ -8,7 +8,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Nexph\\View\\": "src/"
+            "nexphant\\View\\": "src/"
         },
         "files": [
             "src/helpers.php"
