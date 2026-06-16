@@ -1,6 +1,6 @@
 <?php
 
-namespace nexphant\View;
+namespace Nexphant\View;
 
 class View
 {
@@ -11,7 +11,7 @@ class View
 
     public function render(): string
     {
-        $basePath = defined('nexphant_BASE_PATH') ? nexphant_BASE_PATH : getcwd();
+        $basePath = defined('NEXPHANT_BASE_PATH') ? NEXPHANT_BASE_PATH : getcwd();
         $compiled = (new ViewCompiler($basePath . '/storage/nexphant/views'))->compile($this->path);
         extract($this->data);
         ob_start();

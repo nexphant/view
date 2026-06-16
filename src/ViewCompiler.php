@@ -1,6 +1,6 @@
 <?php
 
-namespace nexphant\View;
+namespace Nexphant\View;
 
 class ViewCompiler
 {

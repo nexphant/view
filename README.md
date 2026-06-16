@@ -1,4 +1,4 @@
-# nexphant View Engine
+# Nexphant View Engine
 
 Lightweight view engine with Blade-like syntax and hybrid rendering support.
 
