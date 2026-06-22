@@ -8,7 +8,7 @@
     },
     "autoload": {
         "psr-4": {
-            "nexphant\\View\\": "src/"
+            "Nexphant\\View\\": "src/"
         },
         "files": [
             "src/helpers.php"
