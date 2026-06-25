@@ -16,7 +16,7 @@ class ViewCompiler
 
     public function compile(string $path): string
     {
-        $hash = md5($path);
+        $hash     = md5($path);
         $compiled = $this->cachePath . '/' . $hash . '.php';
 
         if (!file_exists($compiled) || (file_exists($path) && filemtime($path) > filemtime($compiled))) {
@@ -30,43 +30,52 @@ class ViewCompiler
 
     private function compileDirectives(string $content): string
     {
+        // Output
         $content = preg_replace('/\{\{\s*(.+?)\s*\}\}/', '<?= nx($1) ?>', $content);
         $content = preg_replace('/\{!!\s*(.+?)\s*!!\}/', '<?= $1 ?>', $content);
 
         // Control structures
-        $content = preg_replace('/@if\s*\((.+?)\)/', '<?php if ($1): ?>', $content);
-        $content = preg_replace('/@elseif\s*\((.+?)\)/', '<?php elseif ($1): ?>', $content);
-        $content = preg_replace('/@else(?!\w)/', '<?php else: ?>', $content);
-        $content = preg_replace('/@endif/', '<?php endif; ?>', $content);
+        $content = preg_replace('/@if\s*\((.+?)\)/',      '<?php if ($1): ?>',      $content);
+        $content = preg_replace('/@elseif\s*\((.+?)\)/',  '<?php elseif ($1): ?>',  $content);
+        $content = preg_replace('/@else(?!\w)/',           '<?php else: ?>',          $content);
+        $content = preg_replace('/@endif/',                '<?php endif; ?>',         $content);
         $content = preg_replace('/@foreach\s*\((.+?)\)/', '<?php foreach ($1): ?>', $content);
-        $content = preg_replace('/@endforeach/', '<?php endforeach; ?>', $content);
-        $content = preg_replace('/@for\s*\((.+?)\)/', '<?php for ($1): ?>', $content);
-        $content = preg_replace('/@endfor(?!each)/', '<?php endfor; ?>', $content);
-        $content = preg_replace('/@while\s*\((.+?)\)/', '<?php while ($1): ?>', $content);
-        $content = preg_replace('/@endwhile/', '<?php endwhile; ?>', $content);
+        $content = preg_replace('/@endforeach/',           '<?php endforeach; ?>',   $content);
+        $content = preg_replace('/@for\s*\((.+?)\)/',     '<?php for ($1): ?>',     $content);
+        $content = preg_replace('/@endfor(?!each)/',       '<?php endfor; ?>',       $content);
+        $content = preg_replace('/@while\s*\((.+?)\)/',   '<?php while ($1): ?>',   $content);
+        $content = preg_replace('/@endwhile/',             '<?php endwhile; ?>',     $content);
 
         // Layouts
-        $content = preg_replace('/@include\([\'"](.+?)[\'"]\)/', '<?php include view(\'$1\')->render(); ?>', $content);
-        $content = preg_replace('/@extends\([\'"](.+?)[\'"]\)/', '<?php $__layout = \'$1\'; ?>', $content);
-        $content = preg_replace('/@section\([\'"](.+?)[\'"]\)/', '<?php ob_start(); $__section = \'$1\'; ?>', $content);
-        $content = preg_replace('/@endsection/', '<?php $__sections[$__section] = ob_get_clean(); ?>', $content);
-        $content = preg_replace('/@yield\([\'"](.+?)[\'"]\)/', '<?= $__sections[\'$1\'] ?? \'\' ?>', $content);
+        $content = preg_replace("/@include\\(['\"](.+?)['\"]\\)/",  "<?php include view('\\$1')->render(); ?>", $content);
+        $content = preg_replace("/@extends\\(['\"](.+?)['\"]\\)/",  "<?php \$__layout = '\\$1'; ?>",           $content);
+        $content = preg_replace("/@section\\(['\"](.+?)['\"]\\)/",  "<?php ob_start(); \$__section = '\\$1'; ?>", $content);
+        $content = preg_replace('/@endsection/',                     '<?php $__sections[$__section] = ob_get_clean(); ?>', $content);
+        $content = preg_replace("/@yield\\(['\"](.+?)['\"]\\)/",    "<?= \$__sections['\\$1'] ?? '' ?>",       $content);
 
         // CSRF
         $content = str_replace('@csrf', '<?= csrf_field() ?>', $content);
 
         // Auth guards
-        $content = preg_replace('/@auth(?!\w)/', '<?php if (auth_check()): ?>', $content);
-        $content = preg_replace('/@endauth/', '<?php endif; ?>', $content);
+        $content = preg_replace('/@auth(?!\w)/',  '<?php if (auth_check()): ?>',  $content);
+        $content = preg_replace('/@endauth/',     '<?php endif; ?>',              $content);
         $content = preg_replace('/@guest(?!\w)/', '<?php if (!auth_check()): ?>', $content);
-        $content = preg_replace('/@endguest/', '<?php endif; ?>', $content);
+        $content = preg_replace('/@endguest/',    '<?php endif; ?>',              $content);
 
         // Form helpers
-        $content = preg_replace('/@old\([\'"](.+?)[\'"]\)/', '<?= htmlspecialchars((string)(old(\'$1\') ?? \'\'), ENT_QUOTES) ?>', $content);
+        $content = preg_replace("/@old\\(['\"](.+?)['\"]\\)/",   "<?= htmlspecialchars((string)(old('\\$1') ?? ''), ENT_QUOTES) ?>", $content);
+        $content = preg_replace("/@error\\(['\"](.+?)['\"]\\)/", "<?php if (!empty(\$errors['\\$1'])): ?>", $content);
+        $content = preg_replace('/@enderror/',                    '<?php endif; ?>',                       $content);
+        $content = preg_replace("/@flash\\(['\"](.+?)['\"]\\)/", "<?php if (session()->hasFlash('\\$1')): ?>", $content);
+        $content = preg_replace('/@endflash/',                   '<?php endif; ?>',                           $content);
+        $content = preg_replace('/@checked\((.+?)\)/',  "<?= (\\$1) ? 'checked' : '' ?>",  $content);
+        $content = preg_replace('/@selected\((.+?)\)/', "<?= (\\$1) ? 'selected' : '' ?>", $content);
+        $content = preg_replace('/@disabled\((.+?)\)/', "<?= (\\$1) ? 'disabled' : '' ?>", $content);
+        $content = preg_replace('/@readonly\((.+?)\)/', "<?= (\\$1) ? 'readonly' : '' ?>", $content);
 
         // Islands / mount
-        $content = preg_replace('/@island\([\'"](.+?)[\'"]\s*,\s*(\[.+?\])\)/', '<?= nx_island(\'$1\', $2) ?>', $content);
-        $content = preg_replace('/@mount\([\'"](.+?)[\'"]\s*,\s*(\[.+?\])\)/', '<?= nx_mount(\'$1\', $2) ?>', $content);
+        $content = preg_replace("/@island\\(['\"](.+?)['\"]\\s*,\\s*(\\[.+?\\])\\)/", "<?= nx_island('\\$1', \\$2) ?>", $content);
+        $content = preg_replace("/@mount\\(['\"](.+?)['\"]\\s*,\\s*(\\[.+?\\])\\)/",  "<?= nx_mount('\\$1', \\$2) ?>",  $content);
 
         return $content;
     }
