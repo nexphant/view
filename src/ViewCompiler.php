@@ -46,6 +46,13 @@ class ViewCompiler
         $content = preg_replace('/@while\s*\((.+?)\)/',   '<?php while ($1): ?>',   $content);
         $content = preg_replace('/@endwhile/',             '<?php endwhile; ?>',     $content);
 
+        // Switch
+        $content = preg_replace('/@switch\s*\((.+?)\)/',  '<?php switch ($1): ?>', $content);
+        $content = preg_replace('/@case\s*\((.+?)\)/',    '<?php case $1: ?>',     $content);
+        $content = preg_replace('/@default(?!\w)/',        '<?php default: ?>',     $content);
+        $content = preg_replace('/@break(?!\w)/',          '<?php break; ?>',       $content);
+        $content = preg_replace('/@endswitch/',            '<?php endswitch; ?>',   $content);
+
         // Layouts
         $content = preg_replace("/@include\\(['\"](.+?)['\"]\\)/",  "<?php include view('\\$1')->render(); ?>", $content);
         $content = preg_replace("/@extends\\(['\"](.+?)['\"]\\)/",  "<?php \$__layout = '\\$1'; ?>",           $content);
